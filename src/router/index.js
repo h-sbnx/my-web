@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes: [
         { path: '/', name: 'Home', component: () => import('@/views/HomeView.vue') }, // 首页
         { path: '/notice', name: 'Notice', component: () => import('@/views/NoticeView.vue') }, // 赛事通知
