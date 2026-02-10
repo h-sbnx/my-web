@@ -1,4 +1,4 @@
-import{_ as b,c as f,b as e,a as t,w as c,r as n,f as w,o as g,t as p,g as d}from"./index-s0KHejYM.js";const v={class:"notice-page"},V={class:"notice-container"},N={class:"notice-detail"},k={class:"detail-time"},x=["innerHTML"],C={__name:"NoticeView",setup(y){const r=d([{id:1,title:"关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知",time:"2025-02-10",brief:"大赛报名启动、作品要求、时间安排等核心信息",content:`
+import{_ as b,c as f,b as e,a as t,w as c,r as n,f as w,o as g,t as p,g as d}from"./index-zcbz3WUW.js";const v={class:"notice-page"},V={class:"notice-container"},N={class:"notice-detail"},k={class:"detail-time"},x=["innerHTML"],C={__name:"NoticeView",setup(y){const r=d([{id:1,title:"关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知",time:"2025-02-10",brief:"大赛报名启动、作品要求、时间安排等核心信息",content:`
       <p>各相关高校：</p>
       <p>为推动安徽省生物医学工程专业人才培养，提升大学生创新设计能力，决定举办第一届安徽省大学生生物医学工程创新设计大赛，现将有关事项通知如下：</p>
       <h4>一、组织机构</h4>
