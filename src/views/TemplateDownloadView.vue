@@ -4,11 +4,13 @@ import { ElMessage } from 'element-plus'
 // 模板下载函数
 const downloadTemplate = (fileName) => {
   try {
-    const templateUrl = `/templates/${fileName}`;
+    const templateUrl = `${import.meta.env.BASE_URL}templates/${encodeURIComponent(fileName)}`;
     const link = document.createElement('a');
     link.href = templateUrl;
     link.download = fileName;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   } catch (error) {
     ElMessage.error(`《${fileName}》下载失败：${error.message}`);
     console.error('下载错误：', error);
