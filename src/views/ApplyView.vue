@@ -241,7 +241,7 @@ const resetForm = () => {
               添加队员
             </el-button>
             <div class="form-tip">
-              注：每队最少1人，最多5人；每人需上传学生证照片（清晰可辨）；报名截止时间：2026年3月15日
+              注：每队最少1人，最多5人；每人需上传学生证照片（清晰可辨）
             </div>
           </el-form-item>
 
@@ -355,9 +355,10 @@ const resetForm = () => {
   display: none;
 }
 .form-tip {
-  color: #666;
+  color: #c7254e;
   font-size: 12px;
   margin-top: 5px;
   line-height: 1.5;
+  margin-left: 10px;
 }
 </style>
