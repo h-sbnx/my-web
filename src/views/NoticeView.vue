@@ -1,84 +1,121 @@
 <script setup>
-import { ref, reactive } from 'vue'
-
-// 测试通知数据（后续替换为后端接口返回数据）
-const noticeList = reactive([
-  {
-    id: 1,
-    title: "关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知",
-    time: "2025-02-10",
-    brief: "大赛报名启动、作品要求、时间安排等核心信息",
-    content: `
-      <p>各相关高校：</p>
-      <p>为推动安徽省生物医学工程专业人才培养，提升大学生创新设计能力，决定举办第一届安徽省大学生生物医学工程创新设计大赛，现将有关事项通知如下：</p>
-      <h4>一、组织机构</h4>
-      <p>主办单位：安徽省教育厅</p>
-      <p>承办单位：安徽医科大学生物医学工程学院</p>
-      <h4>二、参赛对象</h4>
-      <p>安徽省各高校生物医学工程及相关专业全日制本科生</p>
-      <h4>三、报名时间</h4>
-      <p>2025年3月1日-4月10日</p>
-      <h4>四、作品提交</h4>
-      <p>请于2025年4月15日前提交完整作品包至指定平台</p>
-    `
-  },
-  {
-    id: 2,
-    title: "大赛报名截止时间延期通知",
-    time: "2025-03-20",
-    brief: "因部分高校反馈报名时间紧张，报名截止时间延期至4月15日",
-    content: `
-      <p>各参赛高校：</p>
-      <p>应各高校参赛团队要求，经大赛组委会研究决定，现将第一届安徽省大学生生物医学工程创新设计大赛报名截止时间延期至2025年4月15日，作品提交截止时间不变（4月20日）。</p>
-      <p>请各参赛团队合理安排时间，按时完成报名及作品提交。</p>
-      <p>大赛组委会</p>
-      <p>2025年3月20日</p>
-    `
+import { ref, reactive, computed } from 'vue'
+// 模拟按年份分组的通知数据
+const noticeData = reactive({
+ 2026: [
+    {
+      id: 1,
+      title: "关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知",
+      time: "2026-02-10",
+      fileUrl: "/templates/2025第一轮通知.pdf",
+      fileName: "2025第一届安徽省大学生生物医学工程创新设计大赛第一轮通知"
+    },
+    {
+      id: 2,
+      title: "大赛报名截止时间延期通知",
+      time: "2026-03-20",
+      fileUrl: "/templates/2025延期通知.pdf",
+      fileName: "2025大赛报名截止时间延期通知"
+    }
+  ],
+})
+// 当前选中的年份
+const currentYear = ref("2026")
+// 当前年份对应的通知列表（计算属性）
+const currentYearNotices = computed(() => noticeData[currentYear.value] || [])
+// 当前选中的通知与索引
+const currentNotice = ref(null)
+const currentNoticeIndex = ref(-1)
+// 年份切换事件
+const handleYearChange = (year) => {
+  currentYear.value = year
+  currentNotice.value = null
+}
+// 通知项点击事件
+const handleNoticeClick = (item, index) => {
+  currentNotice.value = item
+  currentNoticeIndex.value = index
+}
+// 上一个/下一个通知导航
+const navigateNotice = (type) => {
+  if (type === "prev") {
+    currentNoticeIndex.value--
+  } else {
+    currentNoticeIndex.value++
   }
-])
-
-// 弹窗控制
-const dialogVisible = ref(false)
-const currentNotice = reactive({})
-
-// 点击行查看详情
-const handleRowClick = (row) => {
-  Object.assign(currentNotice, row)
-  dialogVisible.value = true
+  currentNotice.value = currentYearNotices.value[currentNoticeIndex.value]
 }
 </script>
 
 <template>
   <div class="notice-page">
-<!--    赛事通知-->
-    <div class="notice-container">
-      <h2 class="page-title">赛事通知</h2>
-      <el-table
-          :data="noticeList"
-          border
-          style="width: 100%"
-          @row-click="handleRowClick"
-          class="notice-table"
-      >
-        <el-table-column prop="id" label="序号" width="80" align="center" />
-        <el-table-column prop="title" label="通知标题" min-width="400" />
-        <el-table-column prop="time" label="发布时间" width="180" align="center" />
-        <el-table-column prop="brief" label="内容简介" min-width="300" />
-      </el-table>
 
-      <!-- 通知详情弹窗 -->
-      <el-dialog
-          v-model="dialogVisible"
-          title="通知详情"
-          width="70%"
-          destroy-on-close
-      >
-        <div class="notice-detail">
-          <h3>{{ currentNotice.title }}</h3>
-          <p class="detail-time">发布时间：{{ currentNotice.time }}</p>
-          <div class="detail-content" v-html="currentNotice.content"></div>
+    <div class="notice-container">
+      <div class="notice-sidebar">
+        <div class="sidebar-title">赛事通知</div>
+        <el-menu
+            default-active="2026"
+            class="year-menu"
+            @select="handleYearChange"
+        >
+          <el-menu-item index="2026">2026年通知</el-menu-item>
+          <el-menu-item index="2025">2025年通知</el-menu-item>
+        </el-menu>
+      </div>
+
+      <div class="notice-content">
+        <el-breadcrumb separator=">">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/notice' }">赛事通知</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ currentYear }}年通知</el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <div v-if="!currentNotice" class="notice-list-wrap">
+          <el-list class="notice-list">
+            <el-list-item
+                v-for="(item, index) in currentYearNotices"
+                :key="item.id"
+                @click="handleNoticeClick(item, index)"
+                class="notice-item"
+            >
+              <template #default>
+                <span class="notice-title">{{ item.title }}</span>
+                <span class="notice-time">{{ item.time }}</span>
+              </template>
+            </el-list-item>
+          </el-list>
         </div>
-      </el-dialog>
+
+        <div v-else class="notice-detail-wrap">
+          <h3 class="detail-title">{{ currentNotice.title }}</h3>
+          <div class="detail-content">
+            <a
+                :href="currentNotice.fileUrl"
+                target="_blank"
+                class="pdf-link"
+            >
+              {{ currentNotice.fileName }}.pdf
+            </a>
+          </div>
+
+          <div class="nav-buttons">
+            <el-button
+                type="text"
+                @click="navigateNotice('prev')"
+                :disabled="currentNoticeIndex === 0"
+            >
+              上一个
+            </el-button>
+            <el-button
+                type="text"
+                @click="navigateNotice('next')"
+                :disabled="currentNoticeIndex === currentYearNotices.length - 1"
+            >
+              下一个
+            </el-button>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -90,33 +127,149 @@ const handleRowClick = (row) => {
   min-height: 100vh;
   font-family: "微软雅黑";
 }
+
 .notice-container {
+  width: 90%;
   max-width: 1200px;
-  width: 95%;
   margin: 30px auto;
-  box-sizing: border-box;
+  display: flex;
+  gap: 20px;
 }
-.page-title {
-  color: #c7254e;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #428bca;
-  padding-bottom: 10px;
+
+.notice-sidebar {
+  width: 200px;
+  flex-shrink: 0;
 }
-.notice-table {
-  --el-table-header-text-color: #fff;
-  --el-table-header-bg-color: #c7254e;
-}
-.notice-detail {
-  padding: 20px 0;
-  line-height: 1.8;
-}
-.detail-time {
-  color: #666;
-  margin-bottom: 20px;
-  border-bottom: 1px dashed #ccc;
-  padding-bottom: 10px;
-}
-.detail-content {
+
+.sidebar-title {
+  background-color: #C7254E;
+  color: #FFFFFF;
+  padding: 12px 15px;
+  font-weight: bold;
   font-size: 16px;
+  border-radius: 2px 2px 0 0;
+}
+.year-menu {
+  border: 1px solid #E6E6E6;
+  border-top: none;
+  background-color: #FFFFFF;
+}
+.year-menu :deep(.el-menu-item) {
+  padding-left: 20px !important;
+  height: 42px;
+  line-height: 42px;
+  color: #283747;
+}
+.year-menu :deep(.el-menu-item.is-active) {
+  background-color: #F8E0E6;
+  color: #C7254E;
+  font-weight: 500;
+}
+.year-menu :deep(.el-menu-item:hover) {
+  background-color: #F8E0E6;
+}
+.notice-content {
+  flex: 1;
+  border: 1px solid #E6E6E6;
+  padding: 20px;
+  background-color: #FFFFFF;
+  border-radius: 2px;
+}
+:deep(.el-breadcrumb) {
+  background-color: #C7254E;
+  color: #FFFFFF;
+  padding: 10px 15px;
+  margin-bottom: 25px;
+  border-radius: 2px;
+}
+:deep(.el-breadcrumb__item__inner) {
+  color: #FFFFFF !important;
+}
+:deep(.el-breadcrumb__separator) {
+  color: #FFFFFF !important;
+  margin: 0 8px;
+}
+
+.notice-list-wrap {
+  border-top: 1px solid #E6E6E6;
+  margin-top: 10px;
+}
+.notice-item {
+  border-bottom: 1px dashed #E6E6E6;
+  padding: 12px 0;
+  cursor: pointer;
+  color: #283747;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.notice-item:hover {
+  background-color: #F8E0E6;
+  padding-left: 8px;
+  transition: padding-left 0.2s ease;
+}
+.notice-title {
+  display: inline-block;
+  width: 78%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  margin-right: 15px;
+}
+.notice-time {
+  flex-shrink: 0;
+  color: #666666;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.notice-detail-wrap {
+  padding: 20px 0;
+}
+.detail-title {
+  color: #C7254E;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #F8E0E6;
+}
+.pdf-link {
+  display: block;
+  text-align: center;
+  color: #283747;
+  font-size: 16px;
+  text-decoration: underline;
+  margin: 20px 0;
+}
+.pdf-link:hover {
+  color: #C7254E;
+  text-decoration: none;
+}
+.nav-buttons {
+  text-align: right;
+  margin-top: 40px;
+}
+.nav-buttons :deep(.el-button) {
+  color: #283747;
+  font-size: 14px;
+}
+.nav-buttons :deep(.el-button:hover) {
+  color: #C7254E;
+}
+.nav-buttons :deep(.el-button:disabled) {
+  color: #999999;
+  cursor: not-allowed;
+}
+@media (max-width: 768px) {
+  .notice-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  .notice-title {
+    margin-right: 0;
+  }
 }
 </style>
