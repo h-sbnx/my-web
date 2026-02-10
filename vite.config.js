@@ -4,6 +4,8 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [vue()],
+  //为避免发送至github时样式图片丢失
+  base: process.env.NODE_ENV === 'production' ? '/my-web/' : '/' ,
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
@@ -11,8 +13,3 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.doc', '**/*.docx']
 })
-//为避免发送至github时样式图片丢失
-module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-      ? '/my-web/'
-      : '/' }
