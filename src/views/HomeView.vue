@@ -1,4 +1,7 @@
 <script setup>
+const getNoticeUrl = (fileName) => {
+  return `${import.meta.env.BASE_URL}templates/${encodeURIComponent(fileName)}`;
+};
 </script>
 
 <template>
@@ -31,7 +34,7 @@
         <el-card header="大赛通知" class="module-card">
           <el-list>
             <el-list-item>
-              <a :href="`${import.meta.env.BASE_URL}templates/${encodeURIComponent('关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知.doc')}`" target="_blank">关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知</a>
+              <a :href="getNoticeUrl('关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知.doc')" target="_blank">关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知</a>
             </el-list-item>
             <br><br>
 <!--            <el-list-item>-->
