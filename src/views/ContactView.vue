@@ -14,7 +14,7 @@
               <el-descriptions-item label="大赛组委会办公室">
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>地址：</strong></el-col>
-                  <el-col :span="16">安徽医科大学（梅山路校区）生物医学工程学院208办公室</el-col>
+                  <el-col :span="16">安徽医科大学（梅山路校区）尚学西楼423</el-col>
                 </el-row>
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>邮编：</strong></el-col>
@@ -25,7 +25,7 @@
               <el-descriptions-item label="赛事咨询">
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>负责人：</strong></el-col>
-                  <el-col :span="16">巢春燕老师</el-col>
+                  <el-col :span="16">巢老师</el-col>
                 </el-row>
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>联系电话：</strong></el-col>

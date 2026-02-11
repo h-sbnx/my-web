@@ -1,16 +1,8 @@
 <script setup>
-// 无需额外逻辑，仅依赖路由跳转
 </script>
 
 <template>
   <header class="header-container">
-    <!-- 左侧徽标区域 -->
-    <div class="logo-area">
-      <img src="@/assets/image/school-logo.png" alt="安徽医科大学校徽" class="logo-img" />
-      <img src="@/assets/image/school-name.png" alt="安徽医科大学校名" class="school-name" />
-    </div>
-
-    <!-- 右侧菜单栏 -->
     <nav class="nav-menu">
       <router-link
           to="/"
@@ -81,6 +73,7 @@
   border-bottom: 2px solid #c7254e;
   display: flex;
   align-items: center;
+  flex-direction: row-reverse;
   justify-content: space-between;
   padding: 0 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -88,25 +81,6 @@
   top: 0;
   z-index: 999;
   box-sizing: border-box;
-}
-
-
-.logo-area {
-  display: flex;
-  align-items: center;
-  gap: 60px;
-  margin-left: 70px;
-}
-.logo-img {
-  width: 78px;
-  height: 78px;
-  object-fit: contain;
-
-}
-
-
-.school-name {
-  height: 70px;
 }
 
 .nav-menu {
