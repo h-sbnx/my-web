@@ -38,9 +38,9 @@ const handleNoticeClick = (item, index) => {
 }
 // 上一个/下一个通知导航
 const navigateNotice = (type) => {
-  if (type === "prev") {
+  if (type === "prev" && currentNoticeIndex.value > 0) {
     currentNoticeIndex.value--
-  } else {
+  } else if (type === "next" && currentNoticeIndex.value < currentYearNotices.value.length - 1) {
     currentNoticeIndex.value++
   }
   currentNotice.value = currentYearNotices.value[currentNoticeIndex.value]
@@ -126,6 +126,7 @@ const navigateNotice = (type) => {
   width: 100%;
   min-height: 100vh;
   font-family: "微软雅黑";
+  overflow-x: hidden;
 }
 
 .notice-container {
@@ -134,11 +135,20 @@ const navigateNotice = (type) => {
   margin: 30px auto;
   display: flex;
   gap: 20px;
+  @media (max-width: 768px) {
+    width: 98%;
+    margin: 15px auto;
+    flex-direction: column;
+    gap: 15px;
+  }
 }
 
 .notice-sidebar {
   width: 200px;
   flex-shrink: 0;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .sidebar-title {
@@ -148,6 +158,10 @@ const navigateNotice = (type) => {
   font-weight: bold;
   font-size: 16px;
   border-radius: 2px 2px 0 0;
+  @media (max-width: 768px) {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
 }
 .year-menu {
   border: 1px solid #E6E6E6;
@@ -159,6 +173,12 @@ const navigateNotice = (type) => {
   height: 42px;
   line-height: 42px;
   color: #283747;
+  @media (max-width: 768px) {
+    height: 38px;
+    line-height: 38px;
+    font-size: 13px;
+    padding-left: 15px !important;
+  }
 }
 .year-menu :deep(.el-menu-item.is-active) {
   background-color: #F8E0E6;
@@ -174,6 +194,9 @@ const navigateNotice = (type) => {
   padding: 20px;
   background-color: #FFFFFF;
   border-radius: 2px;
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
 }
 :deep(.el-breadcrumb) {
   background-color: #C7254E;
@@ -181,6 +204,11 @@ const navigateNotice = (type) => {
   padding: 10px 15px;
   margin-bottom: 25px;
   border-radius: 2px;
+  @media (max-width: 768px) {
+    padding: 8px 10px;
+    margin-bottom: 15px;
+    font-size: 13px;
+  }
 }
 :deep(.el-breadcrumb__item__inner) {
   color: #FFFFFF !important;
@@ -202,6 +230,12 @@ const navigateNotice = (type) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: 768px) {
+    padding: 10px 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
 }
 .notice-item:hover {
   background-color: #F8E0E6;
@@ -216,15 +250,29 @@ const navigateNotice = (type) => {
   white-space: nowrap;
   font-size: 15px;
   margin-right: 15px;
+  @media (max-width: 768px) {
+    width: 100%;
+    font-size: 13px;
+    margin-right: 0;
+  }
 }
 .notice-time {
   flex-shrink: 0;
   color: #666666;
   font-size: 14px;
   white-space: nowrap;
+  @media (max-width: 768px) {
+    font-size: 12px;
+    width: 100%;
+    text-align: left;
+    color: #999;
+  }
 }
 .notice-detail-wrap {
   padding: 20px 0;
+  @media (max-width: 768px) {
+    padding: 10px 0;
+  }
 }
 .detail-title {
   color: #C7254E;
@@ -234,6 +282,11 @@ const navigateNotice = (type) => {
   text-align: center;
   padding-bottom: 10px;
   border-bottom: 1px solid #F8E0E6;
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 0 10px 10px;
+  }
 }
 .pdf-link {
   display: block;
@@ -242,6 +295,11 @@ const navigateNotice = (type) => {
   font-size: 16px;
   text-decoration: underline;
   margin: 20px 0;
+  @media (max-width: 768px) {
+    font-size: 14px;
+    padding: 0 10px;
+    margin: 15px 0;
+  }
 }
 .pdf-link:hover {
   color: #C7254E;
@@ -250,10 +308,18 @@ const navigateNotice = (type) => {
 .nav-buttons {
   text-align: right;
   margin-top: 40px;
+  @media (max-width: 768px) {
+    margin-top: 20px;
+    font-size: 13px;
+  }
 }
 .nav-buttons :deep(.el-button) {
   color: #283747;
   font-size: 14px;
+  @media (max-width: 768px) {
+    font-size: 13px;
+    padding: 5px 8px;
+  }
 }
 .nav-buttons :deep(.el-button:hover) {
   color: #C7254E;
@@ -261,15 +327,5 @@ const navigateNotice = (type) => {
 .nav-buttons :deep(.el-button:disabled) {
   color: #999999;
   cursor: not-allowed;
-}
-@media (max-width: 768px) {
-  .notice-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-  }
-  .notice-title {
-    margin-right: 0;
-  }
 }
 </style>

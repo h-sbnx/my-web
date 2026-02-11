@@ -1,4 +1,4 @@
-/* 统一盒模型：所有元素继承border-box，避免宽度计算差异 */
+/* 统一盒模型：避免宽度计算差异 */
 *,
 *::before,
 *::after {
@@ -59,4 +59,35 @@ img {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+/* Element Plus 移动端适配 */
+/* 解决小屏下列表项挤压 */
+:deep(.el-list-item) {
+    padding: 8px 0;
+    @media (max-width: 768px) {
+        padding: 6px 0;
+    }
+}
+
+/* 解决小屏下卡片头部文字溢出 */
+:deep(.el-card__header) {
+    padding: 10px 15px;
+    font-size: 15px;
+    @media (max-width: 768px) {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+
+/* 解决小屏下时间线组件溢出 */
+:deep(.el-timeline) {
+    padding-left: 10px;
+    @media (max-width: 768px) {
+        padding-left: 5px;
+    }
+}
+
+/* 解决小屏下描述组件文字换行 */
+:deep(.el-descriptions-item__content) {
+    word-break: break-all;
 }

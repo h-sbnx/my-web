@@ -78,6 +78,9 @@ const getNoticeUrl = (fileName) => {
   height: 400px;
   background-color: #2196F3;
   position: relative;
+  @media (max-width: 768px) {
+    height: 200px;
+  }
 }
 .banner-text {
   position: absolute;
