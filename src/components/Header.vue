@@ -73,7 +73,6 @@
   border-bottom: 2px solid #c7254e;
   display: flex;
   align-items: center;
-  flex-direction: row-reverse;
   justify-content: space-between;
   padding: 0 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

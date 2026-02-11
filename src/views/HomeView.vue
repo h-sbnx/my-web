@@ -87,22 +87,32 @@ const getNoticeUrl = (fileName) => {
   color: #FFFFFF;
   text-align: center;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  width: 95%;
+  line-height: 1.2;
 }
 .banner-text h1 {
-  font-size: 40px;
-  margin-bottom: 20px;
+  font-size: 100px;
+  margin-bottom: 15px;
+  line-height: 1.1;
+  font-weight: bold;
   @media (max-width: 768px) {
-    font-size: 28px;
+    font-size: 60px;
+  }
+  @media (max-width: 480px) {
+    font-size: 45px;
   }
 }
 .banner-text p {
-  font-size: 20px;
+  font-size: 36px;
+  line-height: 1.2;
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 24px;
+  }
+  @media (max-width: 480px) {
+    font-size: 18px;
   }
 }
 
-/* 模块布局 */
 .home-modules {
   width: 90%;
   margin: 0 auto;
@@ -126,9 +136,6 @@ const getNoticeUrl = (fileName) => {
   .home-modules {
     width: 95%;
     gap: 20px;
-  }
-  .home-carousel {
-    height: 250px !important;
   }
 }
 </style>
