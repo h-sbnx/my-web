@@ -1,0 +1,62 @@
+/* 统一盒模型：所有元素继承border-box，避免宽度计算差异 */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+body {
+    font-family: "Microsoft YaHei", "微软雅黑", "SimSun", "宋体", sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+img {
+    border: none;
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+
+:root {
+    --el-color-primary: #C7254E;
+    --el-color-success: #428bca;
+}
+/* 解决Safari中Element Plus卡片圆角变形 */
+:deep(.el-card) {
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+}
+
+/* 解决Firefox中时间线组件对齐问题 */
+:deep(.el-timeline-item__content) {
+    padding-top: 0;
+    -moz-padding-start: 10px;
+}
+
+/* 解决Edge中按钮文字溢出 */
+:deep(.el-button) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
