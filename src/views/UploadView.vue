@@ -30,12 +30,36 @@ const uploadRef = ref(null)
 const fileList = ref([])
 const uploadUrl = 'http://localhost:8080/api/comp/file/upload' // 后端上传接口
 
+// 新增：文件名格式校验（作品ID_队伍名称）
+const validateFileName = (file) => {
+  const fileName = file.name
+  // 必须包含作品ID前缀
+  if (!fileName.startsWith(uploadForm.workId + '_')) {
+    ElMessage.error(`文件名格式错误！应为：${uploadForm.workId}_队伍名称`);
+    return false
+  }
+  return true
+}
+
 const beforeUpload = (file) => {
+  // 1. 校验文件大小
   const isLt200M = file.size / 1024 / 1024 < 200
   if (!isLt200M) {
     ElMessage.error('文件大小不能超过200MB！')
     return false
   }
+
+  // 2. 校验作品ID是否填写
+  if (!uploadForm.workId) {
+    ElMessage.error('请先填写作品ID！')
+    return false
+  }
+
+  // 3. 校验文件名格式
+  if (!validateFileName(file)) {
+    return false
+  }
+
   return true
 }
 
@@ -54,28 +78,39 @@ const submitUpload = () => {
   })
 }
 
-// 上传成功回调
+// 上传成功回调（适配后端返回格式：{code, message, data}）
 const handleSuccess = (response) => {
-  ElMessage.success(`作品上传成功！文件存储路径：${response.data.filePath}`)
-  resetForm()
+  if (response.code === 200) {
+    ElMessage.success(`作品上传成功！作品ID：${response.data}`)
+    resetForm()
+  } else {
+    ElMessage.error(`上传失败：${response.message}`)
+  }
 }
 
 // 上传失败回调
 const handleError = (error) => {
-  ElMessage.error(`上传失败：${error.message || '网络异常'}`)
+  // 解析后端返回的错误信息
+  let errorMsg = '网络异常，请重试'
+  if (error.response && error.response.data) {
+    errorMsg = error.response.data.message || errorMsg
+  }
+  ElMessage.error(`上传失败：${errorMsg}`)
 }
 
 // 重置表单
 const resetForm = () => {
   uploadFormRef.value.resetFields()
   fileList.value = []
-  uploadRef.value.clearFiles()
+  if (uploadRef.value) {
+    uploadRef.value.clearFiles()
+  }
 }
 </script>
 
 <template>
   <div class="upload-page">
-<!--    作品提交-->
+    <!-- 作品提交 -->
     <div class="upload-container">
       <h2 class="page-title">作品提交</h2>
       <el-card class="upload-card">
@@ -98,21 +133,20 @@ const resetForm = () => {
                 class="upload-demo"
                 ref="uploadRef"
                 :action="uploadUrl"
-                :headers="{'Content-Type': 'multipart/form-data'}"
-                :data="{ workId: uploadForm.workId }"
-                :file-list="fileList"
-                :before-upload="beforeUpload"
-                :on-success="handleSuccess"
-                :on-error="handleError"
-                :limit="1"
-                :auto-upload="false"
-                accept=".zip,.rar,.doc,.docx,.pdf"
+            :data="{ workId: uploadForm.workId }"
+            :file-list="fileList"
+            :before-upload="beforeUpload"
+            :on-success="handleSuccess"
+            :on-error="handleError"
+            :limit="1"
+            :auto-upload="false"
+            accept=".zip,.rar,.doc,.docx,.pdf"
             >
-              <el-button type="primary">选择文件</el-button>
-              <div slot="tip" class="el-upload__tip" >
-                支持格式：zip/rar、doc/docx、pdf<br/>
-                单个文件不超过200MB，文件命名格式：作品ID_队伍名称<br/>
-              </div>
+            <el-button type="primary">选择文件</el-button>
+            <div slot="tip" class="el-upload__tip">
+              支持格式：zip/rar、doc/docx、pdf<br/>
+              单个文件不超过200MB，文件命名格式：作品ID_队伍名称<br/>
+            </div>
             </el-upload>
           </el-form-item>
 
@@ -123,7 +157,6 @@ const resetForm = () => {
         </el-form>
       </el-card>
     </div>
-
   </div>
 </template>
 
