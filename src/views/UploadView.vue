@@ -377,7 +377,7 @@ const handleFileChange = (uploadFile, uploadFiles) => {
                 class="upload-demo"
                 ref="uploadRef"
                 :action="uploadUrl"
-                :data="{ workId: uploadForm.workId }"
+                :data="{ workId: uploadForm.workId,fileType: 'work'}"
                 :file-list="fileList"
                 :before-upload="beforeUpload"
                 :on-success="handleSuccess"
