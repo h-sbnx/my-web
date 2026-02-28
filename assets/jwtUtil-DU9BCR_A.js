@@ -1,0 +1,1 @@
+const o=r=>{if(!r)return null;try{const e=r.split(".")[1],n=atob(e);return JSON.parse(n)}catch(e){return console.error("Token解析失败：",e),null}},t=r=>{const e=o(r);if(!e||!e.exp)return!0;const n=Date.now()/1e3;return e.exp<n};export{t as i};
