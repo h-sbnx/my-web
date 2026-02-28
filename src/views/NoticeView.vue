@@ -1,42 +1,28 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
-// 模拟按年份分组的通知数据
-const noticeData = reactive({
- 2026: [
-    {
-      id: 1,
-      title: "关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知",
-      time: "2026-02-10",
-      fileUrl: "/templates/2025第一轮通知.pdf",
-      fileName: "2025第一届安徽省大学生生物医学工程创新设计大赛第一轮通知"
-    },
-    {
-      id: 2,
-      title: "大赛报名截止时间延期通知",
-      time: "2026-03-20",
-      fileUrl: "/templates/2025延期通知.pdf",
-      fileName: "2025大赛报名截止时间延期通知"
-    }
-  ],
-})
-// 当前选中的年份
-const currentYear = ref("2026")
-// 当前年份对应的通知列表（计算属性）
+import { ref, reactive, computed, onMounted } from 'vue'
+import request from '@/utils/request'
+
+const noticeData = reactive({})
+const yearList = ref([])
+
+const currentYear = ref('')
 const currentYearNotices = computed(() => noticeData[currentYear.value] || [])
-// 当前选中的通知与索引
 const currentNotice = ref(null)
 const currentNoticeIndex = ref(-1)
-// 年份切换事件
+
 const handleYearChange = (year) => {
   currentYear.value = year
   currentNotice.value = null
+  if (!noticeData[year]) {
+    loadNoticeByYear(year)
+  }
 }
-// 通知项点击事件
+
 const handleNoticeClick = (item, index) => {
   currentNotice.value = item
   currentNoticeIndex.value = index
 }
-// 上一个/下一个通知导航
+
 const navigateNotice = (type) => {
   if (type === "prev" && currentNoticeIndex.value > 0) {
     currentNoticeIndex.value--
@@ -45,21 +31,89 @@ const navigateNotice = (type) => {
   }
   currentNotice.value = currentYearNotices.value[currentNoticeIndex.value]
 }
+
+const loadYearList = async () => {
+  try {
+    const res = await request.get('/notice/queryAllYears')
+    if (res.code === 200) {
+      yearList.value = res.data || []
+      if (yearList.value.length > 0) {
+        currentYear.value = yearList.value[0]
+        loadNoticeByYear(currentYear.value)
+      }
+    }
+  } catch (e) {
+    console.error('加载年份失败', e)
+  }
+}
+
+// 核心修改：加载通知时统一多文件格式
+const loadNoticeByYear = async (year) => {
+  try {
+    const res = await request.get('/notice/queryByYear', { params: { year } })
+    if (res.code === 200) {
+      // 兼容单/多文件格式，统一转为files数组
+      noticeData[year] = (res.data || []).map(item => ({
+        ...item,
+        files: item.files || (item.fileUrl ? [{ fileUrl: item.fileUrl, fileName: item.fileName }] : [])
+      }))
+    }
+  } catch (e) {
+    console.error(`加载${year}年通知失败`, e)
+  }
+}
+
+onMounted(() => {
+  loadYearList()
+})
+// 通用文件预览/下载方法（无需登录，直接访问）
+const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
+  try {
+    // 1. 补全文件URL域名（解决相对路径被路由拦截）
+    let fullUrl = fileUrl;
+    if (!fileUrl.startsWith('http')) {
+      fullUrl = `http://localhost:8080${fileUrl}`; // 替换为你的后端实际域名
+    }
+
+    // 2. 预览/下载逻辑（无Token，直接访问）
+    if (isDownload) {
+      const link = document.createElement('a');
+      link.href = fullUrl;
+      link.download = fileName || '文件';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      ElMessage.success(`开始下载：${fileName || '文件'}`);
+    } else {
+      window.open(fullUrl, '_blank'); // 新标签页预览，避免路由拦截
+    }
+  } catch (error) {
+    console.error('文件操作失败：', error);
+    ElMessage.error('文件预览/下载失败，请重试');
+  }
+};
 </script>
 
 <template>
   <div class="notice-page">
-
     <div class="notice-container">
       <div class="notice-sidebar">
         <div class="sidebar-title">赛事通知</div>
         <el-menu
-            default-active="2026"
+            :default-active="currentYear"
             class="year-menu"
             @select="handleYearChange"
         >
-          <el-menu-item index="2026">2026年通知</el-menu-item>
-          <el-menu-item index="2025">2025年通知</el-menu-item>
+          <el-menu-item
+              v-for="year in yearList"
+              :key="year"
+              :index="year"
+          >
+            {{ year }}年通知
+          </el-menu-item>
+          <div v-if="yearList.length === 0" style="padding: 20px; text-align: center; color: #999;">
+            暂无通知年份数据
+          </div>
         </el-menu>
       </div>
 
@@ -84,19 +138,47 @@ const navigateNotice = (type) => {
               </template>
             </el-list-item>
           </el-list>
+          <div v-if="currentYearNotices.length === 0 && currentYear" class="empty-tip" style="text-align:center; padding:20px; color:#999;">
+            暂无{{ currentYear }}年通知数据
+          </div>
+          <div v-if="!currentYear && yearList.length > 0" class="empty-tip" style="text-align:center; padding:20px; color:#999;">
+            请选择左侧年份查看通知
+          </div>
         </div>
 
+        <!-- 核心修改：通知详情页适配多文件下载（带权限校验） -->
+        <!-- 通知详情文件展示 - 无需登录直接下载 -->
         <div v-else class="notice-detail-wrap">
           <h3 class="detail-title">{{ currentNotice.title }}</h3>
           <div class="detail-content">
-            <a
-                :href="currentNotice.fileUrl"
-                target="_blank"
+            <div v-if="currentNotice.files && currentNotice.files.length > 0" class="file-list">
+              <el-button
+                  v-for="(file, idx) in currentNotice.files"
+                  :key="idx"
+                  type="text"
+                  size="small"
+                  @click="handleFileOpen(file.fileUrl, true, file.fileName || `附件${idx + 1}`)"
+                  class="pdf-link"
+                  style="display: block; margin: 4px 0; color: #409eff;"
+              >
+                {{ file.fileName || `附件${idx + 1}` }}.pdf <i class="el-icon-download"></i>
+              </el-button>
+            </div>
+            <el-button
+                v-else-if="currentNotice.fileUrl"
+                type="text"
+                size="small"
+                @click="handleFileOpen(currentNotice.fileUrl, true, currentNotice.fileName)"
                 class="pdf-link"
+                style="display: block; margin: 4px 0; color: #409eff;"
             >
-              {{ currentNotice.fileName }}.pdf
-            </a>
+              {{ currentNotice.fileName }}.pdf <i class="el-icon-download"></i>
+            </el-button>
+            <div v-else class="no-file-tip" style="text-align:center; color:#999; padding:20px;">
+              暂无附件
+            </div>
           </div>
+        </div>
 
           <div class="nav-buttons">
             <el-button
@@ -118,10 +200,10 @@ const navigateNotice = (type) => {
       </div>
     </div>
 
-  </div>
 </template>
 
 <style scoped>
+/* 原有样式不变，新增多文件样式 */
 .notice-page {
   width: 100%;
   min-height: 100vh;
@@ -288,13 +370,20 @@ const navigateNotice = (type) => {
     padding: 0 10px 10px;
   }
 }
+/* 新增：多文件样式 */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
 .pdf-link {
   display: block;
   text-align: center;
   color: #283747;
   font-size: 16px;
   text-decoration: underline;
-  margin: 20px 0;
+  margin: 10px 0;
   @media (max-width: 768px) {
     font-size: 14px;
     padding: 0 10px;

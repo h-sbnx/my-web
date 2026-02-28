@@ -3,7 +3,7 @@ import { ref, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 
-// 1. 基础配置（保持不变）
+// 1. 基础配置（移除硬编码baseApiUrl，统一风格）
 const workId = ref('')
 const queryWorkId = ref('')
 const queryResult = ref(null)
@@ -95,7 +95,7 @@ const applyRules = {
 }
 
 const applyFormRef = ref(null)
-const photoUploadUrl = '/file/upload' // 保持不变
+const photoUploadUrl = '/file/upload' // 保持不变（request会自动拼接baseURL）
 
 // 4. 增删队员（保持不变）
 const addMember = () => {
@@ -132,7 +132,7 @@ const removeMember = (index) => {
   })
 }
 
-// 5. 照片上传（保持不变）
+// 5. 照片上传（统一响应解析逻辑）
 const handlePhotoUpload = async (file, index) => {
   if (!file) {
     ElMessage.error('请选择要上传的照片')
@@ -144,7 +144,7 @@ const handlePhotoUpload = async (file, index) => {
   return true
 }
 
-// 6. 批量上传照片（修复响应解析）
+// 6. 批量上传照片（核心统一：移除baseApiUrl，直接解析response）
 const uploadAllPhotos = async () => {
   if (Object.keys(tempPhotoFiles.value).length === 0) return true
 
@@ -154,17 +154,15 @@ const uploadAllPhotos = async () => {
       formData.append('file', file)
       formData.append('workId', workId.value)
 
-      // 关键：直接使用 request.post，路径不带 /api（request 已配置）
+      // 统一：直接使用request.post，路径不带/api，解析response.code
       const response = await request.post('/file/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
-      // 精准解析：直接取 response.data（后端返回的 {code, data, message}）
-      const res = response.data
 
-      if (res.code !== 200) {
-        throw new Error(`第${Number(index)+1}名队员照片上传失败：${res.message || '服务器异常'}`)
+      if (response.code !== 200) {
+        throw new Error(`第${Number(index)+1}名队员照片上传失败：${response.message || '服务器异常'}`)
       }
-      applyForm.members[index].photoList = [res.data]
+      applyForm.members[index].photoList = [response.data]
     }
     return true
   } catch (error) {
@@ -173,25 +171,33 @@ const uploadAllPhotos = async () => {
   }
 }
 
-// 7. 提交报名（核心修复：精准解析响应 + 错误捕获）
+// 7. 提交报名（核心统一：解析response.code，移除嵌套的data）
 const submitApply = () => {
   applyFormRef.value.validate(async (valid) => {
     if (!valid) {
       ElMessage.error('请完善表单必填信息')
       return
     }
+    const phoneReg = /^1[3-9]\d{9}$/
+    if (!phoneReg.test(applyForm.teacher1.phone)) {
+      ElMessage.error('指导教师1的手机号格式错误，请输入11位有效手机号')
+      return
+    }
+    if (applyForm.teacher2.name && !phoneReg.test(applyForm.teacher2.phone)) {
+      ElMessage.error('指导教师2的手机号格式错误，请输入11位有效手机号')
+      return
+    }
 
     try {
       ElMessage.info('正在生成作品ID...')
-      // 步骤1：生成作品ID（路径：/team/generateWorkId，request 会拼接为 /api/team/generateWorkId）
+      // 步骤1：生成作品ID（统一路径，直接解析response）
       const idResponse = await request.get('/team/generateWorkId')
-      const idRes = idResponse.data // 直接取后端返回的响应体
 
-      if (idRes.code !== 200) {
-        ElMessage.error(`作品ID生成失败：${idRes.message || '服务器返回异常'}`)
+      if (idResponse.code !== 200) {
+        ElMessage.error(`作品ID生成失败：${idResponse.message || '服务器返回异常'}`)
         return
       }
-      workId.value = idRes.data
+      workId.value = idResponse.data
 
       // 步骤2：批量上传照片
       ElMessage.info('正在上传队员照片...')
@@ -200,16 +206,38 @@ const submitApply = () => {
 
       // 步骤3：提交报名信息
       ElMessage.info('正在提交报名信息...')
-      const submitResponse = await request.post('/team/add', {
-        ...applyForm,
-        workId: workId.value
-      })
-      const submitRes = submitResponse.data
+      // 核心修复：严格匹配后端实体结构
+      const submitData = {
+        workId: workId.value,
+        groupType: applyForm.groupType,
+        teamName: applyForm.teamName,
+        projectName: applyForm.projectName,
+        school: applyForm.school,
+        major: applyForm.major,
+        // 修复1：photoList 转换为 String[]（仅保留 fileUuid）
+        members: applyForm.members.map(member => ({
+          name: member.name,
+          gender: member.gender,
+          college: member.college,
+          majorGrade: member.majorGrade,
+          studentType: member.studentType,
+          phone: member.phone,
+          email: member.email,
+          // 关键：将复杂对象数组转为 fileUuid 字符串数组
+          photoList: member.photoList.map(photo => photo.fileUuid || photo)
+        })),
+        // 保留 teacher1 完整字段
+        teacher1: applyForm.teacher1,
+        // 修复2：teacher2 无姓名时传 null，避免空对象
+        teacher2: applyForm.teacher2.name ? applyForm.teacher2 : null
+      }
 
-      if (submitRes.code === 200) {
+      const submitResponse = await request.post('/team/add', submitData)
+
+      if (submitResponse.code === 200) {
         ElMessageBox({
           title: '提交成功',
-          message: `报名成功！\n您的作品ID为：${submitRes.data}\n请妥善保存该ID用于后续作品提交和查询`,
+          message: `报名成功！\n您的作品ID为：${submitResponse.data}\n请妥善保存该ID用于后续作品提交和查询`,
           type: 'success',
           confirmButtonText: '确定'
         }).then(() => {
@@ -220,11 +248,11 @@ const submitApply = () => {
         queryWorkId.value = workId.value
         tempPhotoFiles.value = {}
       } else {
-        ElMessage.error(`报名失败：${submitRes.message || '服务器返回异常'}`)
+        ElMessage.error(`报名失败：${submitResponse.message || '服务器返回异常'}`)
       }
     } catch (error) {
-      console.error("报名提交异常详情：", error) // 打印完整错误，便于排查
-      // 精准捕获错误信息：优先取后端返回的 message，其次是网络错误
+      console.error("报名提交异常详情：", error)
+      // 统一错误提示风格
       const errMsg = error.response?.data?.message || error.message || '网络异常，报名失败'
       ElMessage.error(`报名失败：${errMsg}`)
     }
@@ -250,7 +278,7 @@ const resetForm = () => {
   tempPhotoFiles.value = {}
 }
 
-// 9. 查询报名信息（修复响应解析）
+// 9. 查询报名信息（统一响应解析）
 const queryTeamInfo = async () => {
   if (!queryWorkId.value) {
     ElMessage.warning('请输入作品ID后查询')
@@ -265,19 +293,17 @@ const queryTeamInfo = async () => {
     const response = await request.get('/team/queryByWorkId', {
       params: { workId: queryWorkId.value }
     })
-    const res = response.data
 
-    if (res.code === 200) {
-      queryResult.value = res.data
+    if (response.code === 200) {
+      queryResult.value = response.data
       showQueryResult.value = true
       ElMessage.success('查询报名信息成功')
     } else {
-      ElMessage.error(`查询失败：${res.message || '服务器返回异常'}`)
+      ElMessage.error(`查询失败：${response.message || '服务器返回异常'}`)
     }
   } catch (error) {
     console.error("查询报名信息异常：", error)
-    const errResponse = error.response?.data || {}
-    const errMsg = errResponse.message || '网络异常，查询失败'
+    const errMsg = error.response?.data?.message || '网络异常，查询失败'
     ElMessage.error(`查询失败：${errMsg}`)
   } finally {
     queryLoading.value = false
@@ -289,6 +315,53 @@ const clearQueryResult = () => {
   queryResult.value = null
   showQueryResult.value = false
 }
+
+// 辅助函数：生成预览文字，忽略UUID，统一显示为“学生证照片”
+const getFilePreviewText = (url, index) => {
+  // 忽略URL中的UUID，直接返回统一的文字
+  return `预览学生证照片 `;
+}
+// 通用文件预览/下载方法（解决Token和路径问题）
+// 通用文件预览/下载（普通用户无需登录）
+const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
+  try {
+    let fullUrl = fileUrl;
+    if (!fileUrl.startsWith('http')) {
+      // 双重校验：确保路径以 / 开头，避免拼接错误
+      const normalizedPath = fileUrl.startsWith('/') ? fileUrl : `/${fileUrl}`;
+      // 推荐：使用动态域名，适配不同环境
+      // fullUrl = `${window.location.origin}/api${normalizedPath}`;
+      fullUrl = `http://localhost:8080/api${normalizedPath}`;
+    }
+
+    // 新增：校验URL合法性
+    try {
+      new URL(fullUrl); // 浏览器原生URL校验
+    } catch (e) {
+      ElMessage.error('文件地址无效，无法预览/下载');
+      return;
+    }
+
+    if (isDownload) {
+      const link = document.createElement('a');
+      link.href = fullUrl;
+      link.download = fileName || '文件';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      ElMessage.success(`开始下载：${fileName || '文件'}`);
+    } else {
+      // 新增：用window.open的回调捕获错误
+      const newWindow = window.open(fullUrl, '_blank');
+      if (!newWindow) {
+        ElMessage.warning('浏览器弹窗被拦截，请允许弹窗后重试');
+      }
+    }
+  } catch (error) {
+    console.error('文件操作失败：', error);
+    ElMessage.error('文件预览/下载失败，请重试');
+  }
+};
 </script>
 
 <template>
@@ -349,6 +422,23 @@ const clearQueryResult = () => {
                 <el-table-column label="学生类型" prop="studentType" width="120" />
                 <el-table-column label="手机号码" prop="phone" min-width="150" />
                 <el-table-column label="电子邮箱" prop="email" min-width="200" />
+                <!-- 报名详情-学生证照片 - 无需登录直接预览 -->
+                <el-table-column label="上传文件" min-width="180">
+                  <template #default="scope">
+                    <div v-if="scope.row.photoList && scope.row.photoList.length > 0">
+                      <el-button
+                          v-for="(fileInfo, idx) in scope.row.photoList"
+                          :key="idx"
+                          type="text"
+                          @click="handleFileOpen(`/file/download?fileUuid=${fileInfo.fileUuid || fileInfo}`, false, getFilePreviewText(fileInfo, idx))"
+                          style="display: block; margin: 4px 0; color: #409eff;"
+                      >
+                        {{ getFilePreviewText(fileInfo, idx) }} {{ idx + 1 }} <i class="el-icon-view"></i>
+                      </el-button>
+                    </div>
+                    <span v-else style="color: #999;">未上传文件</span>
+                  </template>
+                </el-table-column>
               </el-table>
             </div>
 

@@ -61,6 +61,13 @@
       >
         联系方式
       </router-link>
+      <router-link
+          to="/login"
+          class="nav-item"
+          active-class="active-nav"
+      >
+        管理员登录
+      </router-link>
     </nav>
   </header>
 </template>
