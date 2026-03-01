@@ -3,7 +3,6 @@
 
 <template>
   <div class="contact-page">
-    <!--联系我们-->
     <div class="contact-container">
       <h2 class="page-title">联系方式</h2>
       <el-row :gutter="20" class="contact-content">
@@ -25,11 +24,11 @@
               <el-descriptions-item label="赛事咨询">
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>负责人：</strong></el-col>
-                  <el-col :span="16">巢老师</el-col>
+                  <el-col :span="16">巢春燕老师</el-col>
                 </el-row>
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>联系电话：</strong></el-col>
-                  <el-col :span="16">0551-6516XXXX / 138XXXX1234</el-col>
+                  <el-col :span="16">15256540495（工作日9:00-17:00）</el-col>
                 </el-row>
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>电子邮箱：</strong></el-col>
@@ -37,24 +36,7 @@
                 </el-row>
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>QQ交流群：</strong></el-col>
-                  <el-col :span="16">大赛交流群（8XXXXXX）</el-col>
-                </el-row>
-              </el-descriptions-item>
-
-              <el-descriptions-item label="技术支持">
-                <el-row :gutter="10" class="contact-item">
-                  <el-col :span="8"><strong>负责人：</strong></el-col>
-                  <el-col :span="16">李老师</el-col>
-                </el-row>
-                <el-row :gutter="10" class="contact-item">
-                  <el-col :span="8"><strong>联系电话：</strong></el-col>
-                  <el-col :span="16">0551-6516YYYY</el-col>
-                </el-row>
-                <el-row :gutter="10" class="contact-item">
-                  <el-col :span="8"><strong>问题反馈：</strong></el-col>
-                  <el-col :span="16">
-                    可通过QQ群反馈报名/上传等技术问题，工作日10:00-17:00回复
-                  </el-col>
+                  <el-col :span="16">XXXXXX</el-col>
                 </el-row>
               </el-descriptions-item>
             </el-descriptions>

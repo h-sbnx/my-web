@@ -47,12 +47,10 @@ const loadYearList = async () => {
   }
 }
 
-// 核心修改：加载通知时统一多文件格式
 const loadNoticeByYear = async (year) => {
   try {
     const res = await request.get('/notice/queryByYear', { params: { year } })
     if (res.code === 200) {
-      // 兼容单/多文件格式，统一转为files数组
       noticeData[year] = (res.data || []).map(item => ({
         ...item,
         files: item.files || (item.fileUrl ? [{ fileUrl: item.fileUrl, fileName: item.fileName }] : [])
@@ -66,16 +64,13 @@ const loadNoticeByYear = async (year) => {
 onMounted(() => {
   loadYearList()
 })
-// 通用文件预览/下载方法（无需登录，直接访问）
 const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
   try {
-    // 1. 补全文件URL域名（解决相对路径被路由拦截）
     let fullUrl = fileUrl;
     if (!fileUrl.startsWith('http')) {
-      fullUrl = `http://localhost:8080${fileUrl}`; // 替换为你的后端实际域名
+      fullUrl = `http://116.62.235.114:8080${fileUrl}`;
     }
 
-    // 2. 预览/下载逻辑（无Token，直接访问）
     if (isDownload) {
       const link = document.createElement('a');
       link.href = fullUrl;
@@ -85,7 +80,7 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
       document.body.removeChild(link);
       ElMessage.success(`开始下载：${fileName || '文件'}`);
     } else {
-      window.open(fullUrl, '_blank'); // 新标签页预览，避免路由拦截
+      window.open(fullUrl, '_blank');
     }
   } catch (error) {
     console.error('文件操作失败：', error);
@@ -146,8 +141,6 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
           </div>
         </div>
 
-        <!-- 核心修改：通知详情页适配多文件下载（带权限校验） -->
-        <!-- 通知详情文件展示 - 无需登录直接下载 -->
         <div v-else class="notice-detail-wrap">
           <h3 class="detail-title">{{ currentNotice.title }}</h3>
           <div class="detail-content">
@@ -203,7 +196,6 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
 </template>
 
 <style scoped>
-/* 原有样式不变，新增多文件样式 */
 .notice-page {
   width: 100%;
   min-height: 100vh;
@@ -370,7 +362,6 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
     padding: 0 10px 10px;
   }
 }
-/* 新增：多文件样式 */
 .file-list {
   display: flex;
   flex-direction: column;

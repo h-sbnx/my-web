@@ -3,14 +3,13 @@ import router from '@/router'
 import { ElMessage } from 'element-plus'
 
 const request = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'http://116.62.235.114:8080/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json;charset=utf-8'
     }
 })
 
-// 请求拦截
 request.interceptors.request.use(config => {
     const token = localStorage.getItem('adminToken')
     if (token) {
@@ -22,7 +21,6 @@ request.interceptors.request.use(config => {
     return Promise.reject(error)
 })
 
-// 响应拦截
 request.interceptors.response.use(
     res => {
         return res.data

@@ -5,7 +5,7 @@ import autoprefixer from 'autoprefixer'
 
 export default defineConfig({
   plugins: [vue()],
-  base: process.env.NODE_ENV === 'production' ? '/my-web/' : '/' ,
+  base: process.env.NODE_ENV === 'production' ? '/' : '/' ,
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')

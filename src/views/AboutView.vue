@@ -3,7 +3,6 @@
 
 <template>
   <div class="about-page">
-<!--    赛事相关介绍-->
     <div class="about-container">
       <h2 class="page-title">关于大赛</h2>
       <el-row :gutter="20" class="about-content">
@@ -14,7 +13,6 @@
               <el-descriptions-item label="主办单位">安徽省生物医学工程学会</el-descriptions-item>
               <el-descriptions-item label="承办单位">安徽医科大学生物医学工程学院</el-descriptions-item>
               <el-descriptions-item label="协办单位">中国科技大学生命科学与医学部-生物医学工程学院、合肥工业大学仪器科学与光电工程学院<br>蚌埠医科大学医学影像学院、皖南医学院医学影像学院</el-descriptions-item>
-              <el-descriptions-item label="组委会">主任：XXX <br/>副主任：XXX </el-descriptions-item>
             </el-descriptions>
           </el-card>
 
@@ -23,9 +21,10 @@
               <el-col :span="12">
                 <h4>参赛对象</h4>
                 <ul class="about-list">
-                  <li>安徽省内各高校本硕博全日制在读学生（决赛时已毕业的学生不能参赛）</li>
+                  <li>安徽省内各高校本硕博全日制在读学生</li>
                   <li>以团队形式参赛，团队人数控制在5人以内，最多2名指导教师</li>
-                  <li>鼓励跨学科专业组队，不可跨校组队，各院校参赛队数不限</li>
+                  <li>参赛项目分本科生组、研究生组（含硕士、博士），混合组队以团队最高学历定组，两组分开评审</li>
+                  <li>鼓励跨学科专业组队，不可跨校组队，跨校组队将取消参赛资格,各院校参赛队数不限</li>
                 </ul>
               </el-col>
               <el-col :span="12">
@@ -33,6 +32,7 @@
                 <ul class="about-list">
                   <li>竞赛作品选题主要为医疗仪器、智能医学信息处理、生物材料相关领域</li>
                   <li>参赛队应尽可能设计并制作出能够反映生物医学工程学科特点的参赛作品</li>
+                  <li>所有参赛队均需提交项目设计报告、作品演示视频、原创性说明</li>
                   <li>参赛作品需为原创，无知识产权纠纷，严禁抄袭</li>
                 </ul>
               </el-col>
@@ -66,9 +66,9 @@
             <el-descriptions column="1" border>
               <el-descriptions-item label="奖项设置">
                 <ul class="about-list">
-                  <li>一等奖：参赛队伍总数的10%，颁发证书+奖励</li>
-                  <li>二等奖：参赛队伍总数的20%，颁发证书+奖励</li>
-                  <li>三等奖：参赛队伍总数的30%，颁发证书+奖励</li>
+                  <li>一等奖：小于等于参赛队伍总数的10%</li>
+                  <li>二等奖：小于等于参赛队伍总数的20%</li>
+                  <li>三等奖：小于等于参赛队伍总数的30%</li>
                 </ul>
               </el-descriptions-item>
             </el-descriptions>

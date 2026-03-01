@@ -36,7 +36,7 @@ const uploadRules = {
 const uploadFormRef = ref(null)
 const uploadRef = ref(null)
 const fileList = ref([])
-const uploadUrl = 'http://localhost:8080/api/file/upload'
+const uploadUrl = 'http://116.62.235.114:8080/api/file/upload'
 
 const checkWorkIdExists = async () => {
   try {
@@ -49,7 +49,6 @@ const checkWorkIdExists = async () => {
   }
 }
 
-// 保持原有文件名校验逻辑
 const validateFileName = (file) => {
   const fileName = file.name
   if (!fileName) {
@@ -97,7 +96,6 @@ const beforeUpload = (file) => {
   return true
 }
 
-// 统一提交逻辑
 const submitUpload = async () => {
   uploadFormRef.value.validate(async (valid) => {
     if (!valid) {
@@ -131,7 +129,6 @@ const submitUpload = async () => {
   })
 }
 
-// 统一成功回调：直接解析response.code
 const handleSuccess = (response) => {
   uploadLoading.value = false
   console.log("上传成功返回：", response)
@@ -161,7 +158,6 @@ const handleSuccess = (response) => {
   }
 }
 
-// 统一错误处理风格
 const handleError = (error) => {
   uploadLoading.value = false
   let errorMsg = '网络异常，请重试'
@@ -178,7 +174,6 @@ const handleError = (error) => {
   fileList.value = []
 }
 
-// 统一重置逻辑
 const resetForm = () => {
   if (uploadFormRef.value) {
     uploadFormRef.value.resetFields()
@@ -193,7 +188,6 @@ const resetForm = () => {
   ElMessage.info('表单已重置')
 }
 
-// 统一查询逻辑：直接解析response.code
 const queryFileList = async () => {
   if (!uploadForm.workId.trim()) {
     ElMessage.warning('请先输入作品ID！')
@@ -229,7 +223,6 @@ const queryFileList = async () => {
   }
 }
 
-// 保持原有文件预览逻辑
 const previewFile = (file) => {
   if (!file || !file.fileUuid) {
     ElMessage.error('文件信息不存在，无法预览/下载');
@@ -240,7 +233,7 @@ const previewFile = (file) => {
   const fileExt = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
 
   if (fileExt === '.pdf') {
-    handleFileOpen(downloadUrl, false, fileName); // 预览
+    handleFileOpen(downloadUrl, false, fileName);
   } else if (['.doc', '.docx', '.zip', '.rar'].includes(fileExt)) {
     ElMessageBox.confirm(
         `是否下载文件：${fileName}`,
@@ -250,16 +243,15 @@ const previewFile = (file) => {
           cancelButtonText: '取消'
         }
     ).then(() => {
-      handleFileOpen(downloadUrl, true, fileName); // 下载
+      handleFileOpen(downloadUrl, true, fileName);
     }).catch(() => {
       ElMessage.info('已取消下载');
     });
   } else {
-    handleFileOpen(downloadUrl, true, fileName); // 其他文件直接下载
+    handleFileOpen(downloadUrl, true, fileName);
   }
 };
 
-// 保持原有格式转换逻辑
 const formatFileSize = (size) => {
   if (!size || size <= 0) return '0 B'
   const units = ['B', 'KB', 'MB', 'GB']
@@ -280,7 +272,6 @@ const formatDateTime = (dateStr) => {
   return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
-// 保持原有文件变更逻辑
 const handleFileChange = (uploadFile, uploadFiles) => {
   if (uploadFiles.length > 0) {
     const currentFile = uploadFiles[0].raw || uploadFiles[0]
@@ -295,14 +286,11 @@ const handleFileChange = (uploadFile, uploadFiles) => {
 
 const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
   try {
-    // 1. 补全文件URL域名（解决相对路径被路由拦截）
     let fullUrl = fileUrl;
     if (!fileUrl.startsWith('http')) {
-      // 核心修复：显式添加 /api 前缀，匹配后端接口
-      fullUrl = `http://localhost:8080/api${fileUrl}`;
+      fullUrl = `http://116.62.235.114:8080/api${fileUrl}`;
     }
 
-    // 2. 预览/下载逻辑（无Token，直接访问）
     if (isDownload) {
       const link = document.createElement('a');
       link.href = fullUrl;
@@ -312,7 +300,7 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
       document.body.removeChild(link);
       ElMessage.success(`开始下载：${fileName || '文件'}`);
     } else {
-      window.open(fullUrl, '_blank'); // 新标签页预览，避免路由拦截
+      window.open(fullUrl, '_blank');
     }
   } catch (error) {
     console.error('文件操作失败：', error);

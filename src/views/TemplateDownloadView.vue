@@ -63,6 +63,18 @@ const downloadTemplate = (fileName) => {
             </div>
           </el-descriptions-item>
 
+          <el-descriptions-item label="参赛作品原创性说明（附件4）">
+            <div class="template-item">
+              <el-button
+                  type="primary"
+                  icon="el-icon-download"
+                  @click="downloadTemplate('参赛作品原创性说明（附件4）.docx')"
+              >
+                下载模板
+              </el-button>
+            </div>
+          </el-descriptions-item>
+
         </el-descriptions>
 
         <div class="template-tip">

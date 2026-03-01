@@ -176,7 +176,6 @@ onMounted(() => {
   font-size: 16px;
 }
 
-/* 响应式适配 */
 @media (max-width: 480px) {
   .login-card {
     width: 90%;

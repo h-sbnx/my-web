@@ -59,7 +59,7 @@ const checkAuth = async () => {
 const baseApiUrl = ''
 const loading = ref(false)
 const exportLoading = ref(false)
-const backendBaseUrl = 'http://localhost:8080'
+const backendBaseUrl = 'http://116.62.235.114:8080'
 
 // ========== 标签页切换 ==========
 const activeTab = ref('teamManage')

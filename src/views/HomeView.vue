@@ -6,7 +6,6 @@ const getNoticeUrl = (fileName) => {
 
 <template>
   <div class="home-page">
-<!--    首页-->
     <div  class="banner-container">
       <div class="banner-text">
         <h1>医工科创·守护健康</h1>
@@ -14,13 +13,12 @@ const getNoticeUrl = (fileName) => {
       </div>
     </div>
 
-    <!-- 核心模块（卡片布局） -->
     <div class="home-modules">
       <div class="module-item">
         <el-card header="大赛通知" class="module-card">
           <el-list>
             <el-list-item>
-              <a :href="getNoticeUrl('关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知.doc')" target="_blank">关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知</a>
+              <a :href="getNoticeUrl('关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知.docx')" target="_blank">关于举办第一届安徽省大学生生物医学工程创新设计大赛的第一轮通知</a>
             </el-list-item>
             <br><br>
           </el-list>
@@ -30,11 +28,11 @@ const getNoticeUrl = (fileName) => {
       <div class="module-item">
         <el-card header="赛事流程" class="module-card">
           <el-timeline>
-            <el-timeline-item timestamp="2025.03.01" placement="top">报名启动</el-timeline-item>
-            <el-timeline-item timestamp="2025.04.15" placement="top">作品提交截止</el-timeline-item>
-            <el-timeline-item timestamp="2025.05.10" placement="top">初赛评审</el-timeline-item>
-            <el-timeline-item timestamp="2025.06.01" placement="top">决赛答辩</el-timeline-item>
-            <el-timeline-item timestamp="2025.06.10" placement="top">结果公示</el-timeline-item>
+            <el-timeline-item timestamp="即日起" placement="top">报名启动</el-timeline-item>
+            <el-timeline-item timestamp="2026.05.01" placement="top">作品提交截止</el-timeline-item>
+            <el-timeline-item timestamp="2026.05.10" placement="top">初赛评审</el-timeline-item>
+            <el-timeline-item timestamp="2026.06.18" placement="top">决赛答辩</el-timeline-item>
+            <el-timeline-item timestamp="2025.06.19" placement="top">结果公示</el-timeline-item>
           </el-timeline>
         </el-card>
       </div>
@@ -42,23 +40,13 @@ const getNoticeUrl = (fileName) => {
       <div class="module-item">
         <el-card header="参赛要求" class="module-card">
           <el-descriptions column="1" border>
-            <el-descriptions-item label="参赛对象">安徽省内各高校本硕博全日制在读学生（决赛时已毕业的学生不能参赛）</el-descriptions-item>
-            <el-descriptions-item label="作品要求">围绕生物医学工程领域创新设计，包含完整设计方案、原型或仿真结果</el-descriptions-item>
-            <el-descriptions-item label="组队要求">以团队形式参赛，团队人数控制在5人以内，最多2名指导教师,鼓励跨学科专业组队，不可跨校组队，各院校参赛队数不限</el-descriptions-item>
-          </el-descriptions>
-        </el-card>
-      </div>
-
-      <div class="module-item">
-        <el-card header="赛事奖励" class="module-card">
-          <el-descriptions column="1" border>
-            <el-descriptions-item label="奖项设置">设一等奖、二等奖、三等奖</el-descriptions-item>
+            <el-descriptions-item label="参赛对象">安徽省内各高校本硕博全日制在读学生</el-descriptions-item>
+            <el-descriptions-item label="作品要求">围绕医疗仪器、智能医学信息处理、生物材料相关领域，需贴合生物医学工程学科特点，具备创新性与实际应用价值</el-descriptions-item>
+            <el-descriptions-item label="组队要求">以团队形式参赛，团队人数控制在5人以内，最多2名指导教师,鼓励跨学科专业组队，不可跨校组队</el-descriptions-item>
           </el-descriptions>
         </el-card>
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -76,7 +64,12 @@ const getNoticeUrl = (fileName) => {
   margin-bottom: 50px;
   width: 100%;
   height: 400px;
+  background-image: url('@/assets/image/Home.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   background-color: #2196F3;
+  background-blend-mode: overlay;
   position: relative;
   @media (max-width: 768px) {
     height: 200px;
@@ -89,9 +82,10 @@ const getNoticeUrl = (fileName) => {
   transform: translate(-50%, -50%);
   color: #FFFFFF;
   text-align: center;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
   width: 95%;
   line-height: 1.2;
+  z-index: 1;
 }
 .banner-text h1 {
   font-size: 100px;
