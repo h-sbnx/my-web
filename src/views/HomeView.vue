@@ -28,11 +28,10 @@ const getNoticeUrl = (fileName) => {
       <div class="module-item">
         <el-card header="赛事流程" class="module-card">
           <el-timeline>
-            <el-timeline-item timestamp="即日起" placement="top">报名启动</el-timeline-item>
-            <el-timeline-item timestamp="2026.05.01" placement="top">作品提交截止</el-timeline-item>
-            <el-timeline-item timestamp="2026.05.10" placement="top">初赛评审</el-timeline-item>
-            <el-timeline-item timestamp="2026.06.18" placement="top">决赛答辩</el-timeline-item>
-            <el-timeline-item timestamp="2025.06.19" placement="top">结果公示</el-timeline-item>
+            <el-timeline-item timestamp="2026.03.20-2026.04.01" placement="top">报名启动</el-timeline-item>
+            <el-timeline-item timestamp="2026.04.01-2026.05.01" placement="top">作品提交</el-timeline-item>
+            <el-timeline-item timestamp="2026.05.02-2026.05.10" placement="top">初赛评审</el-timeline-item>
+            <el-timeline-item timestamp="2026.06.18-2026.06.19" placement="top">决赛答辩</el-timeline-item>
           </el-timeline>
         </el-card>
       </div>

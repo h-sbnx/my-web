@@ -20,13 +20,11 @@ const downloadTemplate = (fileName) => {
 
 <template>
   <div class="template-page">
-<!--模板下载-->
     <div class="template-container">
       <h2 class="page-title">竞赛模板下载</h2>
       <el-card class="template-card">
         <el-descriptions column="1" border class="template-desc">
 
-          <!-- 附件1：报名表（重复提供下载） -->
           <el-descriptions-item label="参赛报名表（附件1）">
             <div class="template-item">
               <el-button
@@ -38,7 +36,6 @@ const downloadTemplate = (fileName) => {
               </el-button>
             </div>
           </el-descriptions-item>
-          <!-- 附件2：推荐参赛表 -->
           <el-descriptions-item label="推荐参赛表（附件2）">
             <div class="template-item">
               <el-button
@@ -50,7 +47,6 @@ const downloadTemplate = (fileName) => {
               </el-button>
             </div>
           </el-descriptions-item>
-          <!-- 附件3：项目设计报告模板 -->
           <el-descriptions-item label="项目设计报告模板（附件3）">
             <div class="template-item">
               <el-button

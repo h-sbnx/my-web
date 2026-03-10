@@ -13,8 +13,8 @@
     </div>
 
     <div class="footer-middle">
-<!--      <p>© 2025 安徽医科大学生物医学工程学院 版权所有</p>-->
-<!--      <p>皖ICP备XXXXXXXX号（替换为学校真实备案号）</p>-->
+      <p>© 2025 安徽医科大学生物医学工程学院 版权所有</p>
+      <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备2026005603号</a>
     </div>
 
   </footer>

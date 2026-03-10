@@ -32,11 +32,16 @@
                 </el-row>
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>电子邮箱：</strong></el-col>
-                  <el-col :span="16">chaocy@ahmu.edu.cn</el-col>
+                  <el-col :span="16">1656488781@qq.com</el-col>
                 </el-row>
                 <el-row :gutter="10" class="contact-item">
                   <el-col :span="8"><strong>QQ交流群：</strong></el-col>
-                  <el-col :span="16">XXXXXX</el-col>
+                  <el-col :span="16">855422954</el-col>
+                  <el-image
+                      src="/templates/QQ群二维码.jpg"
+                      :preview-src-list="['/templates/QQ群二维码.jpg']"
+                      style="width: 80px; height: 80px; margin-left: 10px; vertical-align: middle;"
+                  />
                 </el-row>
               </el-descriptions-item>
             </el-descriptions>
