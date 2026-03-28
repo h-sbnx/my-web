@@ -68,7 +68,7 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
   try {
     let fullUrl = fileUrl;
     if (!fileUrl.startsWith('http')) {
-      fullUrl = `http://116.62.235.114:8080${fileUrl}`;
+      fullUrl = `https://ahmu-bme.cn${fileUrl}`;
     }
 
     if (isDownload) {

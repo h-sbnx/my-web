@@ -3,7 +3,7 @@ import router from '@/router'
 import { ElMessage } from 'element-plus'
 
 const request = axios.create({
-    baseURL: 'http://116.62.235.114:8080/api',
+    baseURL: 'https://ahmu-bme.cn/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json;charset=utf-8'

@@ -36,7 +36,7 @@ const uploadRules = {
 const uploadFormRef = ref(null)
 const uploadRef = ref(null)
 const fileList = ref([])
-const uploadUrl = 'http://116.62.235.114:8080/api/file/upload'
+const uploadUrl = 'https://ahmu-bme.cn/api/file/upload'
 
 const checkWorkIdExists = async () => {
   try {
@@ -288,7 +288,7 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
   try {
     let fullUrl = fileUrl;
     if (!fileUrl.startsWith('http')) {
-      fullUrl = `http://116.62.235.114:8080/api${fileUrl}`;
+      fullUrl = `https://ahmu-bme.cn/api${fileUrl}`;
     }
 
     if (isDownload) {

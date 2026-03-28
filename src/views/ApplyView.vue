@@ -308,7 +308,7 @@ const handleFileOpen = (fileUrl, isDownload = false, fileName = '') => {
     if (!fileUrl.startsWith('http')) {
       const normalizedPath = fileUrl.startsWith('/') ? fileUrl : `/${fileUrl}`;
 
-      fullUrl = `http://116.62.235.114:8080/api${normalizedPath}`;
+      fullUrl = `https://ahmu-bme.cn/api${normalizedPath}`;
     }
 
 
